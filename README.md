@@ -1,4 +1,4 @@
-# dummy_name
+# python_practice
 
 ### 1. Dependency setup
 Run console command to download and setup all dependencies from pyproject.toml:

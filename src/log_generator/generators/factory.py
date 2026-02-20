@@ -1,5 +1,5 @@
-from generator_log import GeneratorLog
-from generator_txt import GeneratorTxt
+from generators.generator_log import GeneratorLog
+from generators.generator_txt import GeneratorTxt
 
 
 def get_generator(generator_type: str):

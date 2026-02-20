@@ -1,6 +1,6 @@
-import data
+import generators.data as data
 from faker import Faker
-from generator_abstract import GeneratorAbstract
+from generators.generator_abstract import GeneratorAbstract
 
 
 class GeneratorTxt(GeneratorAbstract):

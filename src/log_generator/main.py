@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 
 import click
-import factory
+import generators.factory as factory
 from manager import Manager
 from writer_log_file import WriterLogFile
 
@@ -17,14 +17,14 @@ def create_file_name_with_path(base_dir: str, format_ext: str) -> str:
 @click.option(
     "--path",
     default=None,
-    prompt="Path to log file",
+    prompt="Path to create log file",
     type=click.STRING,
-    help="The path to the log file.",
+    help="The path to create log file.",
 )
 @click.option(
     "--format",
-    default=".txt",
-    prompt="File format (log or txt)",
+    default=None,
+    prompt="File format",
     type=click.Choice(["log", "txt"], case_sensitive=False),
     help="The format of the log file.",
 )
@@ -41,6 +41,7 @@ def main(path: str, format: str, file_size: int):
     writer = WriterLogFile(file_path, file_size)
     manager = Manager(generator, writer)
     manager.generate_logs()
+    click.echo(f"Log file generated at: {file_path}")
 
 
 if __name__ == "__main__":
