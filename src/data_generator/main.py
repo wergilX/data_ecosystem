@@ -7,8 +7,8 @@ from .car_generator import CarGenerator
 @click.option(
     "--split",
     type=click.BOOL,
-    default=True,
-    prompt="Generate all vehicles in one file or individualy?",
+    default=False,
+    prompt="Generate all vehicles in splited files?",
     help="Option to generate all vehicles in one file or individualy"
 
 )
