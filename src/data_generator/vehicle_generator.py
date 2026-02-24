@@ -13,9 +13,19 @@ class VehicleGenerator(ABC):
         pass
 
     @abstractmethod
-    def to_json(self):
-        """Write vehicle data in to a json"""
+    def to_one_json(self, count: int):
+        """
+        Generate multiple vehicle data in to one json file
+        param: count - Count of generated vehicles in to file
+        """
+
+    @abstractmethod
+    def to_multiple_jsons(self, count: int):
+        """
+        Generate vehicle data in to a multiple json files
+        param: count - Count of generated vehicles in to separated files
+        """
 
     @abstractmethod
     def to_dict(self) -> dict:
-        """Write vehicle data in to a json"""
+        """Transform vehicle data as dict"""
