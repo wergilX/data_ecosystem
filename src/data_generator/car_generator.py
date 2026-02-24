@@ -2,10 +2,13 @@ import json
 from pathlib import Path
 
 from faker import Faker
+from typing import List
 
 from .car import Car, Engine, Metadata, TechnicalSpecs
 from .vehicle import Vehicle
 from .vehicle_generator import VehicleGenerator
+from datetime import datetime
+import logging
 
 
 class CarGenerator(VehicleGenerator):
@@ -38,21 +41,46 @@ class CarGenerator(VehicleGenerator):
         )
         return car
 
-    def to_json(self):
-        """Generate car data in to a json"""
+    def to_one_json(self, count: int):
+        """
+        Generate multiple car data in to one json file
+        param: count - Count of generated vehicles in to file
+        """
         try:
-            car = self.generate().to_dict()
-            file_path = Path(f"{str(self.base_path)}/{car.get('vin')}.json")
+            cars: List[dict] = []
+
+            for _ in range(count):
+                car = self.generate().to_dict()
+                cars.append(car)
+
+            file_path = Path(f"{str(self.base_path)}/log_cars_{datetime.now()}.json")
             file_path.parent.mkdir(parents=True, exist_ok=True)
-            print(self.base_path)
-            print(file_path)
 
             with open(file_path, "w") as json_file:
-                json.dump(car, json_file, indent=4)
+                json.dump(cars, json_file, indent=4)
 
+            logging.info(f"Log file generated with {count} cars in {file_path}")
         except Exception as e:
-            print(f"Error writing to JSON file: {e}")
+            logging.exception(f"Error writing to JSON file: {e}")
+    
+    def to_multiple_jsons(self, count: int):
+        """
+        Generate cars data in to a multiple json files
+        param: count - Count of generated cars in to separated files
+        """
+        try:
+            for _ in range(count):
+                car = self.generate().to_dict()
+                file_path = Path(f"{str(self.base_path)}/log_car_{car.get("vin")}_{datetime.now()}.json")
+                file_path.parent.mkdir(parents=True, exist_ok=True)
+
+                with open(file_path, "w") as json_file:
+                    json.dump(car, json_file, indent=4)
+
+            logging.info(f"{count} log files generated in {self.base_path}")
+        except Exception as e:
+            logging.exception(f"Error writing to JSON file: {e}")
 
     def to_dict(self) -> dict:
-        """Generate car data as dict"""
+        """Generate car data and return as dict"""
         return self.generate().to_dict()
