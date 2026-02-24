@@ -1,19 +1,21 @@
-import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from .vehicle import Vehicle
+
 
 class VehicleGenerator(ABC):
+    base_path: Path = Path(".")  # Each class must override path for type of vehicle
+
     @abstractmethod
-    def to_dict(self) -> dict:
+    def generate(self) -> Vehicle:
+        """Generate concrete vehicle with technical specs and features"""
         pass
 
-    def to_json(self, vehicles: list, file_path: str):
-        try:
-            path = Path(file_path)
-            path.parent.mkdir(parents=True, exist_ok=True)
+    @abstractmethod
+    def to_json(self):
+        """Write vehicle data in to a json"""
 
-            with open(file_path, "w") as json_file:
-                json.dump(vehicles, json_file, indent=4)
-        except Exception as e:
-            print(f"Error writing to JSON file: {e}")
+    @abstractmethod
+    def to_dict(self) -> dict:
+        """Write vehicle data in to a json"""
