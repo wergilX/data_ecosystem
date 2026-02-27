@@ -1,14 +1,18 @@
 import click
+from .file_reader import file_read
 
 
 @click.command()
-@click.option("--count", default=1, help="Number of greetings.")
-@click.option("--name", prompt="Your name", help="The person to greet.")
-def hello(count, name):
-    """Simple program that greets NAME for a total of COUNT times."""
-    for x in range(count):
-        click.echo(f"Hello {name}!")
+#@click.option("--input", prompt="Input file or folder",  help="Input JSON file or folder with jsons")
 
+#@click.option("--output", prompt="output file path", help="Output path for JSONL file.")
+def main():
+    """Program that transform JSON files in to JSONL"""
+    file_path = "./test.json"
+    print(f"input({file_path})")
+    file_read(file_path)
+
+    
 
 if __name__ == "__main__":
-    hello()
+    main()
