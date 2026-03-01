@@ -1,14 +1,13 @@
 import json
+import logging
+from datetime import datetime
 from pathlib import Path
 
 from faker import Faker
-from typing import List
 
 from .car import Car, Engine, Metadata, TechnicalSpecs
 from .vehicle import Vehicle
 from .vehicle_generator import VehicleGenerator
-from datetime import datetime
-import logging
 
 
 class CarGenerator(VehicleGenerator):
@@ -47,13 +46,9 @@ class CarGenerator(VehicleGenerator):
         param: count - Count of generated vehicles in to file
         """
         try:
-            cars: List[dict] = []
+            cars = [self.generate().to_dict() for _ in range(count)]
 
-            for _ in range(count):
-                car = self.generate().to_dict()
-                cars.append(car)
-
-            file_path = Path(f"{str(self.base_path)}/log_cars_{datetime.now()}.json")
+            file_path = Path(self.base_path / f"log_cars_{datetime.now()}.json")
             file_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(file_path, "w") as json_file:
@@ -62,25 +57,3 @@ class CarGenerator(VehicleGenerator):
             logging.info(f"Log file generated with {count} cars in {file_path}")
         except Exception as e:
             logging.exception(f"Error writing to JSON file: {e}")
-    
-    def to_multiple_jsons(self, count: int):
-        """
-        Generate cars data in to a multiple json files
-        param: count - Count of generated cars in to separated files
-        """
-        try:
-            for _ in range(count):
-                car = self.generate().to_dict()
-                file_path = Path(f"{str(self.base_path)}/log_car_{car.get("vin")}_{datetime.now()}.json")
-                file_path.parent.mkdir(parents=True, exist_ok=True)
-
-                with open(file_path, "w") as json_file:
-                    json.dump(car, json_file, indent=4)
-
-            logging.info(f"{count} log files generated in {self.base_path}")
-        except Exception as e:
-            logging.exception(f"Error writing to JSON file: {e}")
-
-    def to_dict(self) -> dict:
-        """Generate car data and return as dict"""
-        return self.generate().to_dict()

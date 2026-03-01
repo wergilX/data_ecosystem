@@ -18,14 +18,3 @@ class VehicleGenerator(ABC):
         Generate multiple vehicle data in to one json file
         param: count - Count of generated vehicles in to file
         """
-
-    @abstractmethod
-    def to_multiple_jsons(self, count: int):
-        """
-        Generate vehicle data in to a multiple json files
-        param: count - Count of generated vehicles in to separated files
-        """
-
-    @abstractmethod
-    def to_dict(self) -> dict:
-        """Transform vehicle data as dict"""

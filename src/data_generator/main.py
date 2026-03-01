@@ -5,30 +5,18 @@ from .car_generator import CarGenerator
 
 @click.command()
 @click.option(
-    "--split",
-    type=click.BOOL,
-    default=False,
-    prompt="Generate all vehicles in splited files?",
-    help="Option to generate all vehicles in one file or individualy"
-
-)
-@click.option(
     "--count",
     type=click.INT,
     default=1,
     prompt="Count of vehicles to generate",
-    help="The count of json files with vehicles.",
+    help="The count of vehicles to generate in JSON.",
 )
 def main(split: bool, count: int):
     """Main function to generate vehicle data and write it to a JSON file."""
     car_gen = CarGenerator()
+    car_gen.to_one_json(count)
 
-    if split:
-        car_gen.to_multiple_jsons(count)
-    else:
-        car_gen.to_one_json(count)
-
-    click.echo("Log files generated")
+    click.echo("Log file generated")
 
 
 if __name__ == "__main__":
