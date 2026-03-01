@@ -1,5 +1,6 @@
+[
 {
-  "vin": 789012345,
+  "vin": "XY789012345",
   "brand": "Tesla",
   "model": "Model 3",
   "metadata": {
@@ -13,4 +14,21 @@
     }
   },
   "features": ["Autopilot", "Glass Roof"]
+},
+{
+  "vin": "XY789032145",
+  "brand": "BMW",
+  "model": "Model S",
+  "metadata": {
+    "year": 2024,
+    "factory": "Giga Berlin"
+  },
+  "technical_specs": {
+    "engine": {
+      "type": "Electric",
+      "horsepower": 283
+    }
+  },
+  "features": ["Autopilot", "Glass Roof"]
 }
+]
