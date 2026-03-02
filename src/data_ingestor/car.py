@@ -43,3 +43,12 @@ class Car(BaseModel):
     @classmethod
     def check_hp(cls, value: str):
         return value.upper()
+
+    @property
+    def ai_description(self) -> str:
+        return (
+            f"This car is a {self.brand} {self.model} manufactured in {self.metadata.year}. "
+            f"It has a {self.technical_specs.engine.type} engine with "
+            f"{self.technical_specs.engine.horsepower} horsepower."
+            f"This car has a features like: {', '.join(self.features)}."
+        )
