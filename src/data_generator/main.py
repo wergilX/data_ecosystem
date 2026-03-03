@@ -1,6 +1,13 @@
+import logging
+
 import click
 
 from .car_generator import CarGenerator
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 
 
 @click.command()
@@ -11,12 +18,10 @@ from .car_generator import CarGenerator
     prompt="Count of vehicles to generate",
     help="The count of vehicles to generate in JSON.",
 )
-def main(split: bool, count: int):
+def main(count: int):
     """Main function to generate vehicle data and write it to a JSON file."""
     car_gen = CarGenerator()
     car_gen.to_one_json(count)
-
-    click.echo("Log file generated")
 
 
 if __name__ == "__main__":
