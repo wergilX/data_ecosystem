@@ -1,8 +1,14 @@
+import logging
 from pathlib import Path
 
 import click
 
 from .file_transformer import FileTransformer
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 
 
 @click.command()

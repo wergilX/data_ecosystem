@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 from typing import Generator
 
@@ -53,11 +54,15 @@ class FileTransformer:
 
     def data_transform(self, input: Path, output: Path):
         """Manage data transformation from JSON to JSONL"""
+        logging.info(f"Importing data from [{input}] to [{output}] ")
+
         self.input_path = input
         self.output_path = output
         try:
             raw_data = self.read_data()
             car_gen = (Car.model_validate(item) for item in raw_data)
             self.write_in_batches(car_gen)
+
+            logging.info(f"{self.processed_vins} objects processed from {input}")
         except Exception as e:
-            print(f"Error validation: {e}")
+            logging.exception(f"Error validation: {e}")
