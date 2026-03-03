@@ -13,8 +13,8 @@ from .file_transformer import FileTransformer
 )
 @click.option(
     "--output",
-    prompt="output file name with path",
-    help="Output file name with path for JSONL file.",
+    prompt="output file with path './example.json'",
+    help="Output file with path for JSONL file.",
 )
 def main(input, output):
     """Program that transform JSON files in to JSONL"""
@@ -31,7 +31,6 @@ def main(input, output):
     else:
         json_files = (f for f in path.rglob("*.json") if f.is_file())
         for item in json_files:
-            print(item)
             file_transformer.data_transform(item, out_path)
 
 
