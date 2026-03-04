@@ -13,15 +13,16 @@ logging.basicConfig(
 @click.command()
 @click.option(
     "--count",
-    type=click.INT,
+    type=click.IntRange(1, 1000),
     default=1,
     prompt="Count of vehicles to generate",
-    help="The count of vehicles to generate in JSON.",
+    help="The count of vehicles to generate in JSON (1-1000).",
 )
 def main(count: int):
     """Main function to generate vehicle data and write it to a JSON file."""
     car_gen = CarGenerator()
-    car_gen.to_one_json(count)
+    car_gen.generate(count)
+    car_gen.to_json()
 
 
 if __name__ == "__main__":
