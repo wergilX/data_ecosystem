@@ -24,13 +24,16 @@ logging.basicConfig(
 )
 def main(input, output):
     """Program that transform JSON files in to JSONL"""
+    # Check input folder
     path = Path(input)
     if not path.exists():
         raise ValueError(f"Wrong file {input}")
 
+    # Create output file if it's not exist
     out_path = Path(output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Processing data
     file_transformer = FileTransformer()
     if path.is_file():
         file_transformer.data_transform(path, out_path)
