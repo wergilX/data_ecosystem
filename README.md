@@ -10,7 +10,6 @@
 ### 2. The Data Ingestor (Consumer)
 A memory-efficient pipeline designed to transform and validate raw exports.
 * Flattening: Converts nested technical specs into flat key-value pairs for optional Vector DB filtering.
-TODO...
 
 ### 3. Dependency setup
 Run console command to download and setup all dependencies from pyproject.toml:
@@ -19,7 +18,7 @@ Run console command to download and setup all dependencies from pyproject.toml:
 ### 4. Run scripts
 To run scripts with all project dependencies, use the uv run command:
 * Data Generator `uv run -m src.data_generator.main`
-* Data Ingestor `TODO`
+* Data Ingestor `uv run -m src.data_ingestor.main`
 
 ### 5. Code quality
 Check your code for errors, style, and type consistency:
