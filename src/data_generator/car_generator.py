@@ -15,40 +15,47 @@ class CarGenerator(VehicleGenerator):
 
     base_path: Path = Path("./cars")
 
+    def __init__(self):
+        self.faker = Faker()
+        self.objects: list[Car] = []
+
+    def _create_car(self) -> Car:
+        """Generate single car object with data"""
+        return Car(
+            vin=self.faker.bothify(
+                text="???###???", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            ),
+            brand=self.faker.random_element(
+                elements=("Tesla", "BMW", "Ford", "Toyota")
+            ),
+            model=self.faker.random_element(
+                elements=("Model 3", "Model S", "Model X", "Model Y")
+            ),
+            metadata=Metadata(
+                year=self.faker.random_int(min=2020, max=2024),
+                factory=self.faker.random_element(
+                    elements=("Giga Berlin", "Giga Texas", "Giga New York")
+                ),
+            ),
+            technical_specs=TechnicalSpecs(
+                engine=Engine(
+                    type=self.faker.random_element(elements=("Electric", "Hybrid")),
+                    horsepower=self.faker.random_int(min=200, max=500),
+                )
+            ),
+            features=[
+                self.faker.word() for _ in range(self.faker.random_int(min=1, max=5))
+            ],
+        )
+
     def generate(self, count: int):
         """Generate car objects with data"""
-        self.objects: list[Car] = []
-        fake = Faker()
-        for _ in range(count):
-            car = Car(
-                vin=fake.bothify(
-                    text="???###???", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                ),
-                brand=fake.random_element(elements=("Tesla", "BMW", "Ford", "Toyota")),
-                model=fake.random_element(
-                    elements=("Model 3", "Model S", "Model X", "Model Y")
-                ),
-                metadata=Metadata(
-                    year=fake.random_int(min=2020, max=2024),
-                    factory=fake.random_element(
-                        elements=("Giga Berlin", "Giga Texas", "Giga New York")
-                    ),
-                ),
-                technical_specs=TechnicalSpecs(
-                    engine=Engine(
-                        type=fake.random_element(elements=("Electric", "Hybrid")),
-                        horsepower=fake.random_int(min=200, max=500),
-                    )
-                ),
-                features=[fake.word() for _ in range(fake.random_int(min=1, max=5))],
-            )
-            self.objects.append(car)
+        self.objects = [self._create_car() for _ in range(count)]
         logging.info(f"{count} cars data generated")
 
     def to_json(self):
         """
-        Generate multiple car data in to one json file
-        param: count - Count of generated vehicles in to file
+        Generate multiple car data in to json file
         """
         try:
             file_path = Path(self.base_path / f"log_cars_{datetime.now()}.json")
