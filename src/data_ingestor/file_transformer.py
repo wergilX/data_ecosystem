@@ -11,58 +11,63 @@ class FileTransformer:
         """Create container with processed vin"""
         self.processed_vins = set()
 
-    def read_data(self) -> list[dict]:
+    def read_data(self, input_path: Path) -> list[dict]:
         """Read data from input file and return raw data"""
-        with open(self.input_path, "r") as json_file:
+        with open(input_path, "r") as json_file:
             raw_data = json.load(json_file)
             if not isinstance(raw_data, list):
-                raise ValueError("JSON should have list type")
+                raise ValueError("JSON should be a list type")
             return raw_data
 
-    def write_data(self, dump: str):
+    def write_data(self, output_path: Path, dump: str):
         """Write prepared data in to the file"""
-        with open(self.output_path, "a") as json_file:
+        with open(output_path, "a") as json_file:
             json_file.write(dump)
 
-    def write_in_batches(self, generator: Generator[Car], batch_size=5):
+    def write_in_batches(self, objects: Generator, output_path: Path, batch_size=5):
         """Writes data with batching aproach"""
         batch: list[str] = []
 
-        for car in generator:
-            if not self.is_data_new(car.vin):
-                continue
+        for item in objects:
+            match item:
+                case Car():
+                    if self._is_data_new(item.vin):
+                        continue
+                    self.processed_vins.add(item.vin)
 
-            data = car.model_dump()
-            data["content"] = car.ai_description
+                    data = item.model_dump()
+                    data["content"] = item.ai_description
 
-            batch.append(json.dumps(data))
+                    batch.append(json.dumps(data))
+
+                case _:
+                    raise TypeError("Wrong data type")
 
             if len(batch) >= batch_size:
-                self.write_data("\n".join(batch) + "\n")
+                self.write_data(output_path, "\n".join(batch) + "\n")
                 batch.clear()
 
         if batch:
-            self.write_data("\n".join(batch) + "\n")
+            self.write_data(output_path, "\n".join(batch) + "\n")
             batch.clear()
 
-    def is_data_new(self, vin: str) -> bool:
+    def _is_data_new(self, vin: str) -> bool:
         """Dublicate filter"""
         if vin not in self.processed_vins:
-            self.processed_vins.add(vin)
             return True
         return False
 
-    def data_transform(self, input: Path, output: Path):
+    def data_transform(self, input_path: Path, output_path: Path):
         """Manage data transformation from JSON to JSONL"""
-        logging.info(f"Importing data from [{input}] to [{output}] ")
+        logging.info(f"Transforming data from [{input_path}] to [{output_path}] ")
 
-        self.input_path = input
-        self.output_path = output
         try:
-            raw_data = self.read_data()
-            car_gen = (Car.model_validate(item) for item in raw_data)
-            self.write_in_batches(car_gen)
+            raw_data = self.read_data(input_path)
+            car_generator = (Car.model_validate(item) for item in raw_data)
+            self.write_in_batches(objects=car_generator, output_path=output_path)
 
-            logging.info(f"{self.processed_vins} objects processed from {input}")
+            logging.info(
+                f"{len(self.processed_vins)} objects processed from {input_path}"
+            )
         except Exception as e:
             logging.exception(f"Error validation: {e}")

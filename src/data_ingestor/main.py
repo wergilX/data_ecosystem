@@ -19,11 +19,11 @@ logging.basicConfig(
 )
 @click.option(
     "--output",
-    prompt="output file with path './example.json'",
+    prompt="output file with path './example.jsonl'",
     help="Output file with path for JSONL file.",
 )
 def main(input, output):
-    """Program that transform JSON files in to JSONL"""
+    """Script that transforms JSON files into JSONL"""
     # Check input folder
     path = Path(input)
     if not path.exists():
