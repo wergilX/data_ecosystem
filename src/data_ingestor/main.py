@@ -19,7 +19,8 @@ logging.basicConfig(
 )
 @click.option(
     "--output",
-    prompt="output file with path './example.jsonl'",
+    default="./default.jsonl",
+    prompt="Output file with path",
     help="Output file with path for JSONL file.",
 )
 def main(input, output):

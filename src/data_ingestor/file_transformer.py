@@ -3,6 +3,8 @@ import logging
 from pathlib import Path
 from typing import Generator
 
+from flatten_json import flatten
+
 from .car import Car
 
 
@@ -24,21 +26,21 @@ class FileTransformer:
         with open(output_path, "a") as json_file:
             json_file.write(dump)
 
-    def write_in_batches(self, objects: Generator, output_path: Path, batch_size=5):
+    def _write_in_batches(self, objects: Generator, output_path: Path, batch_size=5):
         """Writes data with batching aproach"""
         batch: list[str] = []
 
         for item in objects:
             match item:
                 case Car():
-                    if self._is_data_new(item.vin):
+                    if not self._is_data_new(item.vin):
                         continue
                     self.processed_vins.add(item.vin)
 
                     data = item.model_dump()
                     data["content"] = item.ai_description
-
-                    batch.append(json.dumps(data))
+                    flat_dict = flatten(data)
+                    batch.append(json.dumps(flat_dict))
 
                 case _:
                     raise TypeError("Wrong data type")
@@ -64,7 +66,7 @@ class FileTransformer:
         try:
             raw_data = self.read_data(input_path)
             car_generator = (Car.model_validate(item) for item in raw_data)
-            self.write_in_batches(objects=car_generator, output_path=output_path)
+            self._write_in_batches(objects=car_generator, output_path=output_path)
 
             logging.info(
                 f"{len(self.processed_vins)} objects processed from {input_path}"
