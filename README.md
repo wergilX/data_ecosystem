@@ -1,4 +1,4 @@
-# Data Ecosystemm: Generator & Ingestor
+# Data Ecosystem: Generator & Ingestor
 ​This project simulates a professional data engineering lifecycle, focusing on the transition from complex, legacy-style nested JSON to clean, validated, and flattened data ready for AI and Vector Database pipelines.
 
 ### 1. The Data Generator (Producer)
