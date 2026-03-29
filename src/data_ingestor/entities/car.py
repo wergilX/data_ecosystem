@@ -1,6 +1,8 @@
 from typing import List
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
+
+from ..exceptions import HorspowerError, VinError, YearError
 
 
 class Metadata(BaseModel):
@@ -9,9 +11,9 @@ class Metadata(BaseModel):
 
     @field_validator("year")
     @classmethod
-    def check_hp(cls, value: int):
-        if value < 1900:
-            raise ValueError("The car can't be older than 1900")
+    def check_year(cls, value: int):
+        if value <= 0:
+            raise YearError("Year can't be negative")
         return value
 
 
@@ -22,8 +24,8 @@ class Engine(BaseModel):
     @field_validator("horsepower")
     @classmethod
     def check_hp(cls, value: int):
-        if value <= 0:
-            raise ValueError("The car can't be with 0 horsepower")
+        if value < 0:
+            raise HorspowerError("The car can't be with negative horsepower")
         return value
 
 
@@ -32,6 +34,9 @@ class TechnicalSpecs(BaseModel):
 
 
 class Car(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: str
     vin: str
     brand: str
     model: str
@@ -41,11 +46,14 @@ class Car(BaseModel):
 
     @field_validator("vin")
     @classmethod
-    def check_hp(cls, value: str):
-        return value.upper()
+    def check_vin(cls, value: str):
+        if not value:
+            raise VinError("VIN must be provided")
+        return value
 
     @property
     def ai_description(self) -> str:
+        """Represent class data in a pretty readable text"""
         return (
             f"This car is a {self.brand} {self.model} manufactured in {self.metadata.year}. "
             f"It has a {self.technical_specs.engine.type} engine with "
