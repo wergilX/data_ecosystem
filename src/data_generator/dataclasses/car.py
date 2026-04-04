@@ -23,6 +23,7 @@ class Metadata:
 
 @dataclass
 class Car(Vehicle):
+    type: str
     vin: str
     brand: str
     model: str

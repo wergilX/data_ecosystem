@@ -6,7 +6,8 @@ from pathlib import Path
 
 from faker import Faker
 
-from .car import Car, Engine, Metadata, TechnicalSpecs
+from ..dataclasses.car import Car, Engine, Metadata, TechnicalSpecs
+from ..dataclasses.vehicle import Vehicle
 from .vehicle_generator import VehicleGenerator
 
 
@@ -17,11 +18,11 @@ class CarGenerator(VehicleGenerator):
 
     def __init__(self):
         self.faker = Faker()
-        self.objects: list[Car] = []
 
     def _create_car(self) -> Car:
         """Generate single car object with data"""
         return Car(
+            type="car",
             vin=self.faker.bothify(
                 text="???###???", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             ),
@@ -48,22 +49,26 @@ class CarGenerator(VehicleGenerator):
             ],
         )
 
-    def generate(self, count: int):
-        """Generate car objects with data"""
-        self.objects = [self._create_car() for _ in range(count)]
-        logging.info(f"{count} cars data generated")
+    def generate(self, count: int) -> list[Vehicle]:
+        """Generate multiple car objects with data."""
+        logging.info(f"{count} cars data generated.")
+        cars: list[Vehicle] = [self._create_car() for _ in range(count)]
+        return cars
 
-    def to_json(self):
-        """
-        Generate multiple car data in to json file
-        """
+    def to_json(self, vehicles, path=None):
+        """Generate JSONs with car data."""
+        if path is None:
+            path = self.base_path
+
         try:
-            file_path = Path(self.base_path / f"log_cars_{datetime.now()}.json")
-            file_path.parent.mkdir(parents=True, exist_ok=True)
+            for vehicle in vehicles:
+                file_path = path / f"car_{vehicle.vin}_{datetime.now().date()}.json"
+                file_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(file_path, "w") as json_file:
+                    json.dump(asdict(vehicle), json_file, indent=4)
 
-            with open(file_path, "w") as json_file:
-                json.dump([asdict(item) for item in self.objects], json_file, indent=4)
-
-            logging.info(f"Log file created in {file_path}")
+            logging.info(
+                f"Files were successfully created in the folder: '{path.absolute()}'"
+            )
         except Exception as e:
             logging.exception(f"Error writing to JSON file: {e}")

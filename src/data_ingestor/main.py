@@ -1,9 +1,10 @@
 import logging
-from pathlib import Path
 
 import click
 
-from .file_transformer import FileTransformer
+from data_ingestor.reader import read_files
+from data_ingestor.vehicle_processor import VehicleProcessor
+from data_ingestor.writer import BatchWriter
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,23 +26,16 @@ logging.basicConfig(
 )
 def main(input, output):
     """Script that transforms JSON files into JSONL"""
-    # Check input folder
-    path = Path(input)
-    if not path.exists():
-        raise ValueError(f"Wrong file {input}")
 
-    # Create output file if it's not exist
-    out_path = Path(output)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
+    gen_dict = read_files(input)
+    batch_writer = BatchWriter(output)
+    vehicle_processor = VehicleProcessor()
 
     # Processing data
-    file_transformer = FileTransformer()
-    if path.is_file():
-        file_transformer.data_transform(path, out_path)
-    else:
-        json_files = (f for f in path.rglob("*.json") if f.is_file())
-        for item in json_files:
-            file_transformer.data_transform(item, out_path)
+    with batch_writer as writer:
+        for item in gen_dict:
+            data = vehicle_processor.process(item)
+            writer.write_in_batches(data)
 
 
 if __name__ == "__main__":
