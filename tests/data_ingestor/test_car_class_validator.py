@@ -1,8 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from data_ingestor.entities.car import Car
-from data_ingestor.exceptions import HorspowerError, VinError, YearError
+from data_ingestor.schemas.car import Car
 
 
 @pytest.fixture
@@ -38,7 +37,7 @@ def test_invalid_vin(sample_car_dict):
     test_data = sample_car_dict.copy()
     test_data["vin"] = ""
 
-    with pytest.raises(VinError):
+    with pytest.raises(ValidationError):
         Car.model_validate(test_data)
 
 
@@ -46,7 +45,7 @@ def test_invalid_hp(sample_car_dict):
     test_data = sample_car_dict.copy()
     test_data["technical_specs"]["engine"]["horsepower"] = -20
 
-    with pytest.raises(HorspowerError):
+    with pytest.raises(ValidationError):
         Car.model_validate(test_data)
 
 
@@ -65,7 +64,7 @@ def test_car_invalid_year(sample_car_dict):
     test_data = sample_car_dict.copy()
     test_data["metadata"]["year"] = -20
 
-    with pytest.raises(YearError):
+    with pytest.raises(ValidationError):
         Car.model_validate(test_data)
 
 

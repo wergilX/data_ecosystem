@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from ..dataclasses.vehicle import Vehicle
+from data_generator.dataclasses.vehicle import Vehicle
 
 
 class VehicleGenerator(ABC):

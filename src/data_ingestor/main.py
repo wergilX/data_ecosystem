@@ -2,9 +2,9 @@ import logging
 
 import click
 
-from .reader import read_files
-from .vehicle_processor import VehicleProcessor
-from .writer import BatchWriter
+from data_ingestor.reader import read_files
+from data_ingestor.vehicle_processor import VehicleProcessor
+from data_ingestor.writer import BatchWriter
 
 logging.basicConfig(
     level=logging.INFO,

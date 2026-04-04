@@ -4,7 +4,6 @@ import click
 
 from .generators.aircraft_generator import AircraftGenerator
 from .generators.car_generator import CarGenerator
-from .generators.motorcycle_generator import MotorcycleGenerator
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,17 +29,16 @@ logging.basicConfig(
 def generate_vehicles(type, count):
     """CLI tool to generate vehicle data in JSON format."""
 
-    generators = {
-        "car": CarGenerator,
-        "motorcycle": MotorcycleGenerator,
-        "aircraft": AircraftGenerator,
-    }
-
     click.echo(f"Generating {count} {type}(s)...")
 
     try:
-        generator_class = generators[type]
-        generator = generator_class()
+        match type:
+            case "aircraft":
+                generator = AircraftGenerator()
+            case "car":
+                generator = CarGenerator()
+            case _:
+                raise ValueError("Unknown type")
 
         vehicles = generator.generate(count)
         generator.to_json(vehicles)

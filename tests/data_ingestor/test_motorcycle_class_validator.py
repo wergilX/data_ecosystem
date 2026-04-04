@@ -1,8 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from data_ingestor.entities.motorcycle import Motorcycle
-from data_ingestor.exceptions import HorspowerError, VinError, YearError
+from data_ingestor.schemas.motorcycle import Motorcycle
 
 
 @pytest.fixture
@@ -39,7 +38,7 @@ def test_motorcycle_invalid_vin(sample_motorcycle_dict):
     test_data = sample_motorcycle_dict.copy()
     test_data["vin"] = ""
 
-    with pytest.raises(VinError):
+    with pytest.raises(ValidationError):
         Motorcycle.model_validate(test_data)
 
 
@@ -47,7 +46,7 @@ def test_motorcycle_invalid_hp(sample_motorcycle_dict):
     test_data = sample_motorcycle_dict.copy()
     test_data["technical_specs"]["engine"]["horsepower"] = -20
 
-    with pytest.raises(HorspowerError):
+    with pytest.raises(ValidationError):
         Motorcycle.model_validate(test_data)
 
 
@@ -66,7 +65,7 @@ def test_motorcycle_invalid_year(sample_motorcycle_dict):
     test_data = sample_motorcycle_dict.copy()
     test_data["metadata"]["year"] = -20
 
-    with pytest.raises(YearError):
+    with pytest.raises(ValidationError):
         Motorcycle.model_validate(test_data)
 
 

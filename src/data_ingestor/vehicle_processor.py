@@ -3,10 +3,10 @@ import logging
 
 from flatten_json import flatten  # type: ignore[import-untyped]
 
-from .entities.aircraft import Aircraft
-from .entities.car import Car
-from .entities.motorcycle import Motorcycle
-from .entities.protocol import Vehicle
+from data_ingestor.schemas.aircraft import Aircraft
+from data_ingestor.schemas.base import Vehicle
+from data_ingestor.schemas.car import Car
+from data_ingestor.schemas.motorcycle import Motorcycle
 
 
 class VehicleProcessor:

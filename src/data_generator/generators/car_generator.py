@@ -67,6 +67,8 @@ class CarGenerator(VehicleGenerator):
                 with open(file_path, "w") as json_file:
                     json.dump(asdict(vehicle), json_file, indent=4)
 
-            logging.info(f"Log files created in folder: '{path.absolute()}'")
+            logging.info(
+                f"Files were successfully created in the folder: '{path.absolute()}'"
+            )
         except Exception as e:
             logging.exception(f"Error writing to JSON file: {e}")
